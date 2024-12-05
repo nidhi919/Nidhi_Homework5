@@ -5,10 +5,10 @@ export default function Problem2() {
   const [number, setNumber] = useState(10);
   const [increment, setIncrement] = useState(0);
 
-  const factorial = () => {
+  const factorial = useMemo(() => {
     console.log("Calculating factorial...");
     return calculateFactorial(number);
-  };
+  }, [number]);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -40,7 +40,7 @@ export default function Problem2() {
             </div>
 
             <p>
-                Factorial of {number} is {factorial()}
+                Factorial of {number} is {factorial}
             </p>
 
             <button onClick={() => setIncrement(increment + 1)}>

@@ -65,17 +65,17 @@ export default function Problem3() {
     const [tasks, setTasks] = useState(generateTasks(1000));
     const [newTask, setNewTask] = useState("");
 
-    const handleToggle = (id: number) => {
-        setTasks(
-      tasks.map((task) =>
+    const handleToggle = useCallback((id: number) => {
+        setTasks((prevTasks) =>
+      prevTasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
-  };
+  }, []);
 
-  const handleDelete = (id: number) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+  const handleDelete = useCallback((id: number) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  }, []);
 
   const handleAddTask = () => {
     if (newTask.trim() === "") return;
@@ -119,7 +119,7 @@ export default function Problem3() {
             }}
         >
             {tasks.map((task) => (
-                <TaskItem
+                <MemoizedTaskItem
                     key={task.id}
                     task={task}
                     onToggle={handleToggle}

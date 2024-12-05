@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-// recursive Fibonacci implementation
-function fibonacci(n: number): number {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
+// // recursive Fibonacci implementation
+// function fibonacci(n: number): number {
+//   if (n <= 1) return n;
+//   return fibonacci(n - 1) + fibonacci(n - 2);
+// }
 
 export default function App() {
   const [number, setNumber] = useState(35);
@@ -18,12 +18,19 @@ export default function App() {
 
   useEffect(() => {
     // Initialize the worker
+    const worker = new Worker(new URL("../utils/worker.ts", import.meta.url));
+    setWorker(worker);
 
     // Set up the message handler
-
+    worker.onmessage = (e) =>{
+      setResult(e.data);
+      setComputing(false);
+    };
 
     // Cleanup worker on unmount
-    return () => {};
+    return () => {
+      worker.terminate();
+    };
   }, []);
 
   const handleCompute = () => {
@@ -31,17 +38,11 @@ export default function App() {
     // Your task is to move this computation to a Web Worker
     // Use the skeleton worker.ts in utils folder
 
-    setComputing(true);
-    const startTime = performance.now();
-
-    const result = fibonacci(number);
-
-    const endTime = performance.now();
-    setResult({
-      value: result,
-      duration: endTime - startTime,
-    });
-    setComputing(false);
+    if(worker){
+      setComputing(true);
+      //setResult(null);
+      worker.postMessage(number);
+    }
   };
 
   return (
